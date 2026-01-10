@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>SSE Demo</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 24px; }
+    form { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+    input[type="text"] { padding: 6px 8px; min-width: 220px; }
+    button { padding: 6px 10px; cursor: pointer; }
+    .status { margin-top: 12px; font-size: 14px; }
+    .log { margin-top: 16px; padding: 12px; border: 1px solid #ddd; height: 280px; overflow: auto; background: #fafafa; white-space: pre-wrap; }
+    .hint { margin-top: 12px; font-size: 12px; color: #555; }
+  </style>
+</head>
+<body>
+  <h1>SSE Room Viewer</h1>
+  <form id="room-form">
+    <label for="room">Room</label>
+    <input id="room" name="room" type="text" placeholder="room-123" required />
+    <button type="submit">Connect</button>
+    <button id="disconnect" type="button" disabled>Disconnect</button>
+  </form>
+  <div class="status" id="status">Status: idle</div>
+  <div class="log" id="log"></div>
+  <div class="hint">
+    Example notify API:
+    <code>curl -X POST http://localhost:8080/notifications -H 'Content-Type: application/json' -d '{"room":"room-123","type":"info","title":"Hello","body":"SSE message"}'</code>
+  </div>
+
+  <script>
+    const form = document.getElementById('room-form');
+    const roomInput = document.getElementById('room');
+    const disconnectBtn = document.getElementById('disconnect');
+    const statusEl = document.getElementById('status');
+    const logEl = document.getElementById('log');
+    let source = null;
+
+    function log(message) {
+      const line = `[${new Date().toLocaleTimeString()}] ${message}`;
+      logEl.textContent += line + "\n";
+      logEl.scrollTop = logEl.scrollHeight;
+    }
+
+    function setStatus(text) {
+      statusEl.textContent = `Status: ${text}`;
+    }
+
+    function disconnect() {
+      if (source) {
+        source.close();
+        source = null;
+      }
+      disconnectBtn.disabled = true;
+      setStatus('disconnected');
+    }
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const room = roomInput.value.trim();
+      if (!room) {
+        return;
+      }
+      disconnect();
+      log(`connect to room: ${room}`);
+      source = new EventSource(`/sse/${encodeURIComponent(room)}`);
+      disconnectBtn.disabled = false;
+      setStatus('connecting');
+
+      source.onopen = () => setStatus('connected');
+      source.onerror = () => {
+        setStatus('error');
+        log('connection error or closed');
+      };
+      source.addEventListener('notification', (event) => {
+        log(event.data);
+      });
+    });
+
+    disconnectBtn.addEventListener('click', disconnect);
+  </script>
+</body>
+</html>

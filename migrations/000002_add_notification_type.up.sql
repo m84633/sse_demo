@@ -1,0 +1,2 @@
+ALTER TABLE notifications
+  ADD COLUMN type VARCHAR(64) NOT NULL AFTER room;
