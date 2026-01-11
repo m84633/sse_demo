@@ -16,6 +16,7 @@ USER app
 WORKDIR /app
 
 COPY --from=build /out/server /app/server
+COPY public /app/public
 
 EXPOSE 8082
 ENTRYPOINT ["/app/server"]

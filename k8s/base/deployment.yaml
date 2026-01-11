@@ -27,13 +27,13 @@ spec:
                 name: sse-demo-secret
           readinessProbe:
             httpGet:
-              path: /
+              path: /health
               port: 8082
             initialDelaySeconds: 3
             periodSeconds: 5
           livenessProbe:
             httpGet:
-              path: /
+              path: /health
               port: 8082
             initialDelaySeconds: 10
             periodSeconds: 10
