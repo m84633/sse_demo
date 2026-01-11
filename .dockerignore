@@ -12,8 +12,4 @@ out
 .env.*
 deploy
 k8s
-migrations
-db
-sqlc.yaml
 e2e
-internal/db
