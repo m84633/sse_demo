@@ -16,7 +16,7 @@ spec:
         - name: ghcr-credentials
       containers:
         - name: sse-demo
-          image: ghcr.io/renpeiwang/sse-demo:dev
+          image: ghcr.io/m84633/sse-demo:dev
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8082
