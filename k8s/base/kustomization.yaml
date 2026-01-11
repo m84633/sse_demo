@@ -14,5 +14,5 @@ configMapGenerator:
 generatorOptions:
   disableNameSuffixHash: false
 images:
-  - name: ghcr.io/renpeiwang/sse-demo
+  - name: ghcr.io/m84633/sse-demo
     newTag: 05ff03628dc675a3b168625cba50f70708c34cff
