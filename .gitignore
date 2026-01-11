@@ -21,6 +21,9 @@
 .env.*
 !.env.example
 AGENTS.md
+k8s/base/secret.env
+k8s/base/secret.template.yaml
+k8s/base/ghcr-credentials.template.yaml
 
 # Secret keys
 # Do not commit private keys.
