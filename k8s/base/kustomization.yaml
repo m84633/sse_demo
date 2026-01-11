@@ -15,4 +15,4 @@ generatorOptions:
   disableNameSuffixHash: false
 images:
   - name: ghcr.io/renpeiwang/sse-demo
-    newTag: a5e6a105f7e80db785044a608bd11d0e1d411ae5
+    newTag: 05ff03628dc675a3b168625cba50f70708c34cff
