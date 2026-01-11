@@ -15,4 +15,4 @@ generatorOptions:
   disableNameSuffixHash: false
 images:
   - name: ghcr.io/m84633/sse-demo
-    newTag: ec203a19c739b9abe84d2c34bca80fe2654f97b6
+    newTag: b5d5f2078fa822d9f1ac2c9a6c4c3703d9c9dff7
