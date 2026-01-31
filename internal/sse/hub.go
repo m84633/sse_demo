@@ -81,7 +81,6 @@ func (h *Hub) removeClient(client *Client) {
 func (h *Hub) broadcastToRoom(notification model.Notification) {
 	h.mu.RLock()
 	room := h.rooms[notification.Room]
-	h.mu.RUnlock()
 	for client := range room {
 		select {
 		case client.Ch <- notification:
@@ -89,4 +88,5 @@ func (h *Hub) broadcastToRoom(notification model.Notification) {
 			// Drop if the client is too slow.
 		}
 	}
+	h.mu.RUnlock()
 }
