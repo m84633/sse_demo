@@ -2,6 +2,7 @@ package http
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"go.uber.org/zap"
 
 	"sse_demo/internal/http/controller"
@@ -15,6 +16,7 @@ func NewRouter(handler *controller.Handler, logger *zap.Logger) *gin.Engine {
 	router.GET("/health", func(c *gin.Context) {
 		c.Status(200)
 	})
+	router.GET("/metrics", gin.WrapH(promhttp.Handler()))
 	router.StaticFile("/", "./public/index.html")
 	router.POST("/notifications", handler.CreateNotification)
 	router.POST("/notifications/publish", handler.PublishNotification)

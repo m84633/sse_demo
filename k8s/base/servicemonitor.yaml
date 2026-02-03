@@ -1,0 +1,14 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: sse-demo
+  labels:
+    release: kube-prom-stack
+spec:
+  selector:
+    matchLabels:
+      app: sse-demo
+  endpoints:
+    - port: http
+      path: /metrics
+      interval: 15s
