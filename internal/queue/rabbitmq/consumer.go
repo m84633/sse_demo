@@ -11,7 +11,6 @@ import (
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/codes"
-	"go.opentelemetry.io/otel/propagation"
 	"go.uber.org/zap"
 	"sse_demo/internal/config"
 	"sse_demo/internal/domain"
@@ -170,7 +169,7 @@ type payload struct {
 }
 
 func (r *Consumer) handleMessage(ctx context.Context, msg amqp.Delivery) error {
-	ctx = otel.GetTextMapPropagator().Extract(ctx, propagation.MapCarrier(msg.Headers))
+	ctx = otel.GetTextMapPropagator().Extract(ctx, amqpHeaderCarrier(msg.Headers))
 	ctx, span := otel.Tracer("rabbitmq").Start(ctx, "rabbitmq.handle_message")
 	span.SetAttributes(
 		attribute.String("messaging.system", "rabbitmq"),

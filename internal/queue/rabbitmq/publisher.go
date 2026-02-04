@@ -8,7 +8,6 @@ import (
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/codes"
-	"go.opentelemetry.io/otel/propagation"
 	"go.uber.org/zap"
 	"sse_demo/internal/config"
 	"sse_demo/internal/queue"
@@ -77,7 +76,7 @@ func (p *Publisher) Publish(ctx context.Context, payload []byte, routingKey stri
 	}
 
 	headers := amqp.Table{}
-	otel.GetTextMapPropagator().Inject(ctx, propagation.MapCarrier(headers))
+	otel.GetTextMapPropagator().Inject(ctx, amqpHeaderCarrier(headers))
 
 	if err := ch.PublishWithContext(ctx,
 		p.exchange,
