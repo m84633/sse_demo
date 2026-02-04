@@ -4,6 +4,8 @@ import (
 	"context"
 	"sync"
 
+	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/attribute"
 	"sse_demo/internal/model"
 )
 
@@ -79,8 +81,16 @@ func (h *Hub) removeClient(client *Client) {
 }
 
 func (h *Hub) broadcastToRoom(notification model.Notification) {
+	_, span := otel.Tracer("sse").Start(context.Background(), "sse.broadcast")
+	span.SetAttributes(
+		attribute.String("sse.room", notification.Room),
+		attribute.String("notification.type", notification.Type),
+	)
+	defer span.End()
+
 	h.mu.RLock()
 	room := h.rooms[notification.Room]
+	span.SetAttributes(attribute.Int("sse.clients", len(room)))
 	for client := range room {
 		select {
 		case client.Ch <- notification:

@@ -10,15 +10,14 @@ import (
 	"sse_demo/internal/http"
 	"sse_demo/internal/http/controller"
 	"sse_demo/internal/logging"
-	"sse_demo/internal/service/notify"
 	"sse_demo/internal/queue/rabbitmq"
+	"sse_demo/internal/service/notify"
 	"sse_demo/internal/sse"
 	"sse_demo/internal/store"
 )
 
-func InitializeApp() (*app.App, error) {
+func InitializeApp(cfg *config.Config) (*app.App, error) {
 	wire.Build(
-		config.New,
 		logging.New,
 		store.NewStore,
 		sse.NewHub,

@@ -62,7 +62,7 @@ func TestPublishFlow(t *testing.T) {
 	require.NoError(t, waitForConsumer(ctx, amqpURL, cfg.RabbitQueue, 5*time.Second))
 
 	handler := controller.NewHandler(cfg, svc, hub, logger, publisher)
-	router := httpserver.NewRouter(handler, logger)
+	router := httpserver.NewRouter(handler, logger, cfg)
 
 	hubCtx, hubCancel := context.WithCancel(ctx)
 	defer hubCancel()

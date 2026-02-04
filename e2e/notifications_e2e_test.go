@@ -52,7 +52,7 @@ func TestSSEFlow(t *testing.T) {
 	hub := sse.NewHub()
 	svc := notify.NewService(repo, hub, logger)
 	handler := controller.NewHandler(cfg, svc, hub, logger, queue.Publisher(&noopPublisher{}))
-	router := httpserver.NewRouter(handler, logger)
+	router := httpserver.NewRouter(handler, logger, cfg)
 
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()

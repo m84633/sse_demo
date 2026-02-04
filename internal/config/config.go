@@ -19,6 +19,9 @@ type Config struct {
 	RabbitPublishPrefix string
 	SSEHeartbeat time.Duration
 	HistoryLimit int
+	OTELServiceName string
+	OTLPEndpoint    string
+	OTLPInsecure    bool
 }
 
 func New() *Config {
@@ -33,6 +36,8 @@ func New() *Config {
 		RabbitRoutingKey:   "notification.*",
 		RabbitConsumerTag:  "sse-consumer",
 		RabbitPublishPrefix: "notification",
+		OTELServiceName: "sse-demo",
+		OTLPInsecure:    true,
 	}
 
 	if addr := os.Getenv("HTTP_ADDR"); addr != "" {
@@ -58,6 +63,18 @@ func New() *Config {
 	}
 	if v := os.Getenv("RABBITMQ_PUBLISH_PREFIX"); v != "" {
 		cfg.RabbitPublishPrefix = v
+	}
+
+	if v := os.Getenv("OTEL_SERVICE_NAME"); v != "" {
+		cfg.OTELServiceName = v
+	}
+	if v := os.Getenv("OTEL_EXPORTER_OTLP_ENDPOINT"); v != "" {
+		cfg.OTLPEndpoint = v
+	}
+	if v := os.Getenv("OTEL_EXPORTER_OTLP_INSECURE"); v != "" {
+		if b, err := strconv.ParseBool(v); err == nil {
+			cfg.OTLPInsecure = b
+		}
 	}
 
 	if v := os.Getenv("SSE_HEARTBEAT_SECONDS"); v != "" {

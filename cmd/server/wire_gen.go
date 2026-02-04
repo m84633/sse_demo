@@ -20,22 +20,21 @@ import (
 
 // Injectors from wire.go:
 
-func InitializeApp() (*app.App, error) {
-	configConfig := config.New()
+func InitializeApp(cfg *config.Config) (*app.App, error) {
 	hub := sse.NewHub()
 	logger, err := logging.New()
 	if err != nil {
 		return nil, err
 	}
-	notificationRepository, err := store.NewStore(configConfig, logger)
+	notificationRepository, err := store.NewStore(cfg, logger)
 	if err != nil {
 		return nil, err
 	}
 	service := notify.NewService(notificationRepository, hub, logger)
-	consumer := rabbitmq.NewConsumer(configConfig, service, logger)
-	publisher := rabbitmq.NewPublisher(configConfig, logger)
-	handler := controller.NewHandler(configConfig, service, hub, logger, publisher)
-	engine := http.NewRouter(handler, logger)
-	appApp := app.NewApp(configConfig, hub, consumer, engine, logger)
+	consumer := rabbitmq.NewConsumer(cfg, service, logger)
+	publisher := rabbitmq.NewPublisher(cfg, logger)
+	handler := controller.NewHandler(cfg, service, hub, logger, publisher)
+	engine := http.NewRouter(handler, logger, cfg)
+	appApp := app.NewApp(cfg, hub, consumer, engine, logger)
 	return appApp, nil
 }

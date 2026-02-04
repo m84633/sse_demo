@@ -3,15 +3,18 @@ package http
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
+	"go.opentelemetry.io/contrib/instrumentation/github.com/gin-gonic/gin/otelgin"
 	"go.uber.org/zap"
 
+	"sse_demo/internal/config"
 	"sse_demo/internal/http/controller"
 	"sse_demo/internal/http/middleware"
 )
 
-func NewRouter(handler *controller.Handler, logger *zap.Logger) *gin.Engine {
+func NewRouter(handler *controller.Handler, logger *zap.Logger, cfg *config.Config) *gin.Engine {
 	router := gin.New()
 	router.Use(middleware.ZapLogger(logger), middleware.ZapRecovery(logger))
+	router.Use(otelgin.Middleware(cfg.OTELServiceName))
 
 	router.GET("/health", func(c *gin.Context) {
 		c.Status(200)
